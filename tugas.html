@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi dan List Pendaftar</title>
+    <style>
+        /* CSS untuk styling */
+        /* Style tab */
+        .tab {
+            display: none;
+        }
+
+        /* Style form */
+        .form-tab {
+            display: block;
+        }
+
+        /* Style tabel */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <!-- Tombol tab Registrasi -->
+        <button onclick="openTab('form-tab')">Registrasi</button>
+
+        <!-- Tombol tab List Pendaftar -->
+        <button onclick="openTab('list-tab')">List Pendaftar</button>
+    </div>
+
+    <!-- Tab Registrasi -->
+    <div id="form-tab" class="tab">
+        <h2>Form Registrasi</h2>
+        <form id="registration-form">
+            <label for="nama">Nama:</label>
+            <input type="text" id="nama" name="nama" required minlength="10"><br>
+
+            <label for="umur">Umur:</label>
+            <input type="number" id="umur" name="umur" required min="25"><br>
+
+            <label for="uang">Uang Sangu (100.000 - 1.000.000):</label>
+            <input type="number" id="uang" name="uang" required min="100000" max="1000000"><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <!-- Tab List Pendaftar -->
+    <div id="list-tab" class="tab">
+        <h2>List Pendaftar</h2>
+        <p>Rata-rata pendaftar memiliki uang saku sebesar <span id="average-umur"></span> dengan rata-rata umur <span id="average-uang"></span></p>
+        <table id="pendaftar-table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Umur</th>
+                    <th>Uang Sangu</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data pendaftar akan dimasukkan di sini -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Fungsi untuk menampilkan tab
+        function openTab(tabName) {
+            var tabs = document.getElementsByClassName("tab");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].style.display = "none";
+            }
+            document.getElementById(tabName).style.display = "block";
+        }
+
+        // Inisialisasi tab saat halaman dimuat
+        openTab("form-tab");
+
+        // Fungsi untuk mengambil data dari form dan menambahkannya ke tabel
+        document.getElementById("registration-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            var nama = document.getElementById("nama").value;
+            var umur = document.getElementById("umur").value;
+            var uang = document.getElementById("uang").value;
+
+            // Validasi data
+            if (nama.length < 10 || umur < 25 || uang < 100000 || uang > 1000000) {
+                alert("Data tidak memenuhi kriteria.");
+                return;
+            }
+
+            // Menambahkan data ke tabel
+            var table = document.getElementById("pendaftar-table").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            cell1.innerHTML = nama;
+            cell2.innerHTML = umur;
+            cell3.innerHTML = uang;
+
+            // Menghitung rata-rata umur dan uang saku
+            var rows = table.rows;
+            var totalUmur = 0;
+            var totalUang = 0;
+            for (var i = 0; i < rows.length; i++) {
+                totalUmur += parseInt(rows[i].cells[1].innerHTML);
+                totalUang += parseInt(rows[i].cells[2].innerHTML);
+            }
+            var averageUmur = totalUmur / rows.length;
+            var averageUang = totalUang / rows.length;
+
+            // Menampilkan rata-rata di tab List Pendaftar
+            document.getElementById("average-umur").textContent = averageUmur.toFixed(2);
+            document.getElementById("average-uang").textContent = averageUang.toFixed(2);
+        });
+    </script>
+</body>
+</html>
